@@ -1,4 +1,4 @@
-<picture><img src="https://raw.githubusercontent.com/uclamii/mcartest/refs/heads/main/assets/mcartest_logo.svg?token=GHSAT0AAAAAAC44GZGNQUHIP4XIVKRSWGOY2SRRYSQ" width="400" alt="My Logo"/></picture>
+<picture><img src="https://raw.githubusercontent.com/uclamii/mcartest/refs/heads/main/assets/mcartest_logo.svg?token=GHSAT0AAAAAAC44GZGNQUHIP4XIVKRSWGOY2SRRYSQ" width="350" alt="My Logo"/></picture>
 
 MCAR statistical tests in Python: Little's chi-square test and pairwise t-tests, extended with Cohen's d effect sizes and MCAR/not-MCAR labeling
 
