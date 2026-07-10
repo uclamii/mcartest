@@ -1,3 +1,10 @@
+# Third-Party Licenses
+
+## pyampute
+The file `src/yourlib/mcar_statistical_tests.py` is derived from pyampute
+(https://github.com/RianneSchouten/pyampute), used under the BSD 3-Clause License.
+
+
 BSD 3-Clause License
 
 Copyright (c) 2018, the respective contributors, as shown by the AUTHORS file.
