@@ -23,13 +23,13 @@ Zamanzadeh.
 
 PyPI: https://pypi.org/project/mcartest
 Documentation: https://uclamii.github.io/mcartest/
-Version: 0.0.0a1
+Version: 0.0.0a3
 """
 
 # Assign only the detailed documentation to __doc__
 __doc__ = detailed_doc
 
-__version__ = "0.0.0a1"
+__version__ = "0.0.0a3"
 __author__ = "Leonid Shpaner"
 __email__ = "lshpaner@ucla.edu"
 

@@ -181,4 +181,7 @@ We advise using MCAR tests carefully. Rejecting the null does not always mean th
 ## References
 
 1. Little, R. J. A. (1988). A Test of Missing Completely at Random for Multivariate Data with Missing Values. *Journal of the American Statistical Association*, 83(404), 1198-1202. https://doi.org/10.1080/01621459.1988.10478722
-2. Schouten, R. M., Lugtig, P., & Vink, G. (2021). Generating missing values for simulation purposes. *Journal of Statistical Computation and Simulation*.
+
+2. Schouten, R. M., Lugtig, P., & Vink, G. (2018). Generating missing values for simulation purposes: A multivariate amputation procedure. *Journal of Statistical Computation and Simulation*, 88(15), 2909-2930. https://doi.org/10.1080/00949655.2018.1491577
+
+3. Schouten, R. M., & Zamanzadeh, D. *pyampute: A Python library for generating missing values in complete datasets*. https://github.com/RianneSchouten/pyampute
