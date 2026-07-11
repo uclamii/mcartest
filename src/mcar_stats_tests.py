@@ -63,6 +63,20 @@ def _effect_label(
     return labels[0]
 
 
+def _elementwise(df, func):
+    """Apply ``func`` elementwise to a DataFrame, across pandas versions.
+
+    ``DataFrame.map`` was introduced in pandas 2.1.0; earlier versions expose
+    the same behavior as ``DataFrame.applymap``. This tries ``.map`` first and
+    falls back to ``.applymap`` when it is unavailable, so the library works on
+    both older (Python 3.8 era) and current pandas.
+    """
+    try:
+        return df.map(func)  # pandas >= 2.1
+    except AttributeError:
+        return df.applymap(func)  # pandas < 2.1
+
+
 class MCARTest:
     """
     Statistical hypothesis test for Missing Completely At Random (MCAR)
@@ -284,7 +298,7 @@ class MCARTest:
 
         # effect matrix as magnitude labels if requested (or implied by gating)
         if size_label or effect_if_not_mcar:
-            effect_matrix = effect_matrix.map(_effect_label)
+            effect_matrix = _elementwise(effect_matrix, _effect_label)
 
         # gate effect labels to NON-MCAR cells only (p <= alpha); blank elsewhere
         if effect_if_not_mcar:
@@ -293,10 +307,12 @@ class MCARTest:
 
         # p-value matrix as MCAR / not-MCAR labels if requested
         if label_mcar:
-            pvalues = pvalues.map(lambda p: "MCAR" if pd.notna(p) and p > alpha else "")
+            pvalues = _elementwise(
+                pvalues, lambda p: "MCAR" if pd.notna(p) and p > alpha else ""
+            )
         elif label_not_mcar:
-            pvalues = pvalues.map(
-                lambda p: "not MCAR" if pd.notna(p) and p <= alpha else ""
+            pvalues = _elementwise(
+                pvalues, lambda p: "not MCAR" if pd.notna(p) and p <= alpha else ""
             )
 
         if effect_size:
