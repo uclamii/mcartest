@@ -184,4 +184,4 @@ We advise using MCAR tests carefully. Rejecting the null does not always mean th
 
 2. Schouten, R. M., Lugtig, P., & Vink, G. (2018). Generating missing values for simulation purposes: A multivariate amputation procedure. *Journal of Statistical Computation and Simulation*, 88(15), 2909-2930. https://doi.org/10.1080/00949655.2018.1491577
 
-3. Schouten, R. M., & Zamanzadeh, D. *pyampute: A Python library for generating missing values in complete datasets*. https://github.com/RianneSchouten/pyampute
+3. Schouten, R. M., Zamanzadeh, D., & Singh, P. (2022). *pyampute: a Python library for data amputation*. Zenodo. https://doi.org/10.25080/majora-212e5952-03e
