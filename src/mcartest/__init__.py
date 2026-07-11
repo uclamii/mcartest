@@ -1,5 +1,5 @@
-from .mcar_statistical_tests import MCARTest
-from .df_utils import style_significant, style_label, style_effect
+from .mcar_stats_tests import MCARTest
+from ._dataframe_utils import style_significant, style_label, style_effect
 from .logo import *
 
 import sys
