@@ -4,11 +4,11 @@
 
 <!-- [![Downloads](https://pepy.tech/badge/mcartest)](https://pepy.tech/project/mcartest) [![PyPI](https://img.shields.io/pypi/v/mcartest.svg)](https://pypi.org/project/mcartest/) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)  -->
 
-`mcartest` provides statistical tests for assessing whether missing data is Missing Completely At Random (MCAR), the assumption most imputation methods quietly depend on. It implements Little's chi-square test across the full dataset and pairwise *t*-tests between every combination of features, returning results as a readable matrix rather than a single opaque p-value.
+`mcartest` provides statistical tests for assessing whether missing data is Missing Completely At Random (MCAR), the assumption most imputation methods quietly depend on. It implements Little's chi-square test across the full dataset and pairwise *t*-tests between every combination of features, returning results as a readable matrix rather than a single opaque *p*-value.
 
-Where most implementations stop at significance, `mcartest` also reports **Cohen's *d* effect sizes**, because a p-value alone is misleading: with a large sample, a trivial difference becomes "significant," while a real association in a sparse missing-group may never reach the threshold. Effect sizes tell you *how strongly* missingness is tied to a feature, not just whether the test rejected.
+Where most implementations stop at significance, `mcartest` also reports **Cohen's *d* effect sizes**, because a *p*-value alone is misleading: with a large sample, a trivial difference becomes "significant," while a real association in a sparse missing-group may never reach the threshold. Effect sizes tell you *how strongly* missingness is tied to a feature, not just whether the test rejected.
 
-Results can be returned as raw p-values, as human-readable **MCAR / not-MCAR labels**, or as **effect-size magnitude bands** (negligible, small, medium, large) reported only where MCAR is rejected, since under MCAR there is no association to quantify. Styling helpers render the matrices with color-coded cells in notebooks and export them straight to Excel.
+Results can be returned as raw *p*-values, as human-readable **MCAR / not-MCAR labels**, or as **effect-size magnitude bands** (negligible, small, medium, large) reported only where MCAR is rejected, since under MCAR there is no association to quantify. Styling helpers render the matrices with color-coded cells in notebooks and export them straight to Excel.
 
 Built on [pyampute](https://github.com/RianneSchouten/pyampute) (BSD 3-Clause), extended with the effect-size and labeling functionality described above.
 
