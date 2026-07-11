@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcartest"
+version = "0.0.0a"
+description = "MCAR statistical tests in Python: Little's chi-square test and pairwise t-tests, extended with Cohen's d effect sizes and MCAR/not-MCAR labeling."
+readme = { file = "README.md", content-type = "text/markdown" }
+authors = [
+    { name = "Leonid Shpaner", email = "lshpaner@ucla.edu" }
+]
+
+requires-python = ">=3.8"
+dependencies = [
+    "numpy>=1.19.0",
+    "pandas>=1.3.0",
+    "scipy>=1.5.0",
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent"
+]
+
+[project.optional-dependencies]
+styling = [
+    "jinja2>=3.0.0",
+    "openpyxl>=3.0.0",
+]
+
+[project.urls]
+"Documentation" = "https://uclamii.github.io/mcartest/"
+"Source Code" = "https://github.com/uclamii/mcartest/"
+"Leon Shpaner's Website" = "https://www.leonshpaner.com"
+
+[tool.setuptools.packages.find]
+where = ["src"]
