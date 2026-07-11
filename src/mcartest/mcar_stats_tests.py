@@ -42,7 +42,7 @@ def _cohens_d(a: pd.Series, b: pd.Series) -> float:
     pooled = np.sqrt(((n1 - 1) * s1**2 + (n2 - 1) * s2**2) / (n1 + n2 - 2))
     if pooled == 0:
         return np.nan
-    return (a.mean() - b.mean()) / pooled
+    return abs((a.mean() - b.mean()) / pooled)   
 
 
 def _effect_label(
