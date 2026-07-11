@@ -1,6 +1,6 @@
 <picture><img src="https://github.com/uclamii/mcartest/blob/main/assets/mcartest_logo.svg" width="350" alt="My Logo"/></picture>
 
-MCAR statistical tests in Python: Little's chi-square test and pairwise t-tests, extended with Cohen's d effect sizes and MCAR/not-MCAR labeling
+MCAR statistical tests in Python: Little's chi-square test and pairwise *t*-tests, extended with Cohen's *d* effect sizes and MCAR/not-MCAR labeling
 
 ## Prerequisites
 
