@@ -23,8 +23,7 @@ import pandas as pd
 from math import pow
 from scipy.stats import chi2, ttest_ind
 
-# Local
-Matrix = Union[pd.DataFrame, np.ndarray]
+################################## Helpers #####################################
 
 
 def _cohens_d(a: pd.Series, b: pd.Series) -> float:
@@ -75,6 +74,12 @@ def _elementwise(df, func):
         return df.map(func)  # pandas >= 2.1
     except AttributeError:
         return df.applymap(func)  # pandas < 2.1
+
+
+################################################################################
+
+# Local
+Matrix = Union[pd.DataFrame, np.ndarray]
 
 
 class MCARTest:
@@ -217,6 +222,7 @@ class MCARTest:
         size_label=False,
         label_mcar=False,
         label_not_mcar=False,
+        label_both=False,
         effect_if_not_mcar=False,
         alpha=0.05,
     ):
@@ -244,8 +250,14 @@ class MCARTest:
 
         label_not_mcar : bool, default : False
             If True, the p-value matrix is replaced with "not MCAR" where the null
-            is rejected (p <= alpha) and "" elsewhere. Complementary to
-            `label_mcar`. If both are set, `label_mcar` takes precedence.
+            is rejected (p <= alpha) and "" elsewhere.
+
+        label_both : bool, default : False
+            If True, the p-value matrix is replaced with "MCAR" where p > alpha
+            and "not MCAR" where p <= alpha, leaving "" only where the test could
+            not run (NaN). Blank is therefore unambiguous under this mode.
+
+            Only one of `label_mcar`, `label_not_mcar`, `label_both` may be set.
 
         effect_if_not_mcar : bool, default : False
             If True, the effect matrix reports magnitude labels only where MCAR is
@@ -254,23 +266,27 @@ class MCARTest:
             test rejects. Implies label output for the effect matrix.
 
         alpha : float, default : 0.05
-            Significance threshold used by `label_mcar`, `label_not_mcar`, and
+            Significance threshold used by the label modes and
             `effect_if_not_mcar`.
 
         Returns
         -------
         pvalues : pandas DataFrame of shape `(m, m)`
             The p-values of t-tests for each pair of features (or label strings
-            when `label_mcar` / `label_not_mcar` is True). Null hypothesis for cell
-            :math:`pvalues[h,j]`: data in feature :math:`h` is Missing Completely
-            At Random (MCAR) with respect to feature :math:`j`. Diagonal values do
-            not exist.
+            under a label mode). Null hypothesis for cell :math:`pvalues[h,j]`:
+            data in feature :math:`h` is Missing Completely At Random (MCAR) with
+            respect to feature :math:`j`. Diagonal values do not exist.
 
         effect_matrix : pandas DataFrame of shape `(m, m)`
             Returned when `effect_size` is True. Absolute Cohen's d for each pair
             (magnitude only), or magnitude labels when `size_label` or
             `effect_if_not_mcar` is set.
         """
+        if sum([bool(label_mcar), bool(label_not_mcar), bool(label_both)]) > 1:
+            raise ValueError(
+                "Choose at most one of label_mcar, label_not_mcar, label_both."
+            )
+
         dataset = X.copy()
         dataset = dataset.select_dtypes(include="number")
         vars = dataset.dtypes.index.values
@@ -305,8 +321,13 @@ class MCARTest:
             not_mcar = pvalues <= alpha
             effect_matrix = effect_matrix.where(not_mcar, "")
 
-        # p-value matrix as MCAR / not-MCAR labels if requested
-        if label_mcar:
+        # p-value matrix as MCAR / not-MCAR / combined labels if requested
+        if label_both:
+            pvalues = _elementwise(
+                pvalues,
+                lambda p: "" if pd.isna(p) else ("MCAR" if p > alpha else "not MCAR"),
+            )
+        elif label_mcar:
             pvalues = _elementwise(
                 pvalues, lambda p: "MCAR" if pd.notna(p) and p > alpha else ""
             )
