@@ -2,7 +2,7 @@
 
 <br>
 
-[![Downloads](https://pepy.tech/badge/mcartest)](https://pepy.tech/project/mcartest) [![PyPI](https://img.shields.io/pypi/v/mcartest.svg)](https://pypi.org/project/mcartest/) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 
+[![Downloads](https://pepy.tech/badge/mcartest)](https://pepy.tech/project/mcartest) [![PyPI](https://img.shields.io/pypi/v/mcartest.svg?include_prereleases)](https://pypi.org/project/mcartest/) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 
 
 `mcartest` provides statistical tests for assessing whether missing data is Missing Completely At Random (MCAR), the assumption most imputation methods quietly depend on. It implements Little's chi-square test across the full dataset and pairwise *t*-tests between every combination of features, returning results as a readable matrix rather than a single opaque *p*-value.
 
