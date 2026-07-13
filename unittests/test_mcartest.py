@@ -1,7 +1,7 @@
 """Tests for mcartest."""
 
-import numpy as np
 import pandas as pd
+import numpy as np
 import pytest
 
 from mcartest.mcar_stats_tests import (
