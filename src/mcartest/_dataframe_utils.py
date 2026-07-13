@@ -59,7 +59,8 @@ def style_label(
     Parameters
     ----------
     df : pandas.DataFrame
-        The label matrix to style (from label_mcar and/or label_not_mcar).
+        The label matrix to style (from label_mcar, label_not_mcar, or
+        label_both).
     mcar_color, not_mcar_color : str
         Background colors for 'MCAR' and 'not MCAR' cells. Any CSS color.
     mcar_text, not_mcar_text : str, optional
@@ -106,3 +107,34 @@ def style_effect(
         return band_styles.get(val, "")
 
     return _style_map(df.style, _fn)
+
+
+def add_missing_counts(df, source, col_name="n_missing"):
+    """Prepend each variable's missing-value count to a result matrix.
+
+    An effect size means something very different depending on how much data
+    is actually missing for that variable: a large effect backed by three
+    missing rows is noise, while the same effect backed by three hundred is
+    worth acting on. Counts are aligned by variable name, so this works
+    regardless of how the matrix has been transposed.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The result matrix (p-values, labels, or effect sizes), in whatever
+        orientation you want it.
+    source : pandas.DataFrame
+        The original data the tests were run on, used to count missing values.
+    col_name : str, default "n_missing"
+        Name for the inserted column.
+
+    Returns
+    -------
+    pandas.DataFrame
+        A copy of `df` with the count column inserted as the first column.
+        Variables absent from `source` receive NaN.
+    """
+    counts = source.isna().sum()
+    out = df.copy()
+    out.insert(0, col_name, counts.reindex(out.index))
+    return out

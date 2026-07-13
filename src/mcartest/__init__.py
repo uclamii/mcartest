@@ -1,5 +1,10 @@
 from .mcar_stats_tests import MCARTest
-from ._dataframe_utils import style_significant, style_label, style_effect
+from ._dataframe_utils import (
+    style_significant,
+    style_label,
+    style_effect,
+    add_missing_counts,
+)
 from .logo import *
 
 import sys
@@ -23,13 +28,13 @@ Zamanzadeh.
 
 PyPI: https://pypi.org/project/mcartest
 Documentation: https://uclamii.github.io/mcartest/
-Version: 0.0.0a2
+Version: 0.0.0a3
 """
 
 # Assign only the detailed documentation to __doc__
 __doc__ = detailed_doc
 
-__version__ = "0.0.0a2"
+__version__ = "0.0.0a3"
 __author__ = "Leonid Shpaner"
 __email__ = "lshpaner@ucla.edu"
 
@@ -38,8 +43,8 @@ __all__ = [
     "style_significant",
     "style_label",
     "style_effect",
+    "add_missing_counts",
 ]
-
 
 
 # Define the custom help function

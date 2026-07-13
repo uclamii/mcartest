@@ -14,9 +14,9 @@ from mcartest._dataframe_utils import (
     style_significant,
     style_label,
     style_effect,
+    add_missing_counts,
     _css,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -333,9 +333,7 @@ class TestEffectModes:
 
     def test_size_label_matches_numeric_bands(self, mcar_df):
         _, numeric = MCARTest.mcar_t_tests(mcar_df, effect_size=True)
-        _, labeled = MCARTest.mcar_t_tests(
-            mcar_df, effect_size=True, size_label=True
-        )
+        _, labeled = MCARTest.mcar_t_tests(mcar_df, effect_size=True, size_label=True)
         for r in numeric.index:
             for c in numeric.columns:
                 d = numeric.loc[r, c]
@@ -372,9 +370,7 @@ class TestEffectModes:
 
     def test_pvalues_unaffected_by_effect_flags(self, mcar_df):
         plain = MCARTest.mcar_t_tests(mcar_df)
-        pvals, _ = MCARTest.mcar_t_tests(
-            mcar_df, effect_size=True, size_label=True
-        )
+        pvals, _ = MCARTest.mcar_t_tests(mcar_df, effect_size=True, size_label=True)
         pd.testing.assert_frame_equal(plain, pvals)
 
 
@@ -437,9 +433,7 @@ class TestStylers:
         styler.to_html()
 
     def test_style_effect_returns_styler(self, mcar_df):
-        _, effects = MCARTest.mcar_t_tests(
-            mcar_df, effect_size=True, size_label=True
-        )
+        _, effects = MCARTest.mcar_t_tests(mcar_df, effect_size=True, size_label=True)
         styler = style_effect(effects)
         assert isinstance(styler, pd.io.formats.style.Styler)
         styler.to_html()
@@ -464,3 +458,85 @@ class TestStylers:
     def test_unsupported_method(self, mcar_df):
         mt = MCARTest(method="bogus")
         mt(mcar_df)  # currently logs an error and returns None
+
+
+# ---------------------------------------------------------------------------
+# add_missing_counts
+# ---------------------------------------------------------------------------
+
+
+class TestAddMissingCounts:
+    def test_column_is_prepended(self, mcar_df):
+        pvals = MCARTest.mcar_t_tests(mcar_df)
+        out = add_missing_counts(pvals, mcar_df)
+        assert out.columns[0] == "n_missing"
+        assert out.shape[1] == pvals.shape[1] + 1
+
+    def test_counts_are_correct(self):
+        source = pd.DataFrame(
+            {
+                "a": [1.0, np.nan, 3.0, np.nan],
+                "b": [1.0, 2.0, 3.0, 4.0],
+                "c": [np.nan, np.nan, np.nan, 4.0],
+            }
+        )
+        matrix = pd.DataFrame(index=["a", "b", "c"], columns=["x"], data=[0, 0, 0])
+        out = add_missing_counts(matrix, source)
+        assert out.loc["a", "n_missing"] == 2
+        assert out.loc["b", "n_missing"] == 0
+        assert out.loc["c", "n_missing"] == 3
+
+    def test_aligns_by_variable_name_not_position(self):
+        """Counts follow the variable, whatever order the matrix is in."""
+        source = pd.DataFrame(
+            {
+                "a": [1.0, np.nan, np.nan],
+                "b": [1.0, 2.0, 3.0],
+            }
+        )
+        # matrix rows deliberately reversed relative to source columns
+        matrix = pd.DataFrame(index=["b", "a"], columns=["x"], data=[0, 0])
+        out = add_missing_counts(matrix, source)
+        assert out.loc["a", "n_missing"] == 2
+        assert out.loc["b", "n_missing"] == 0
+
+    def test_works_after_transpose(self, mcar_df):
+        """Orientation is decided by the caller; the helper must not care."""
+        pvals = MCARTest.mcar_t_tests(mcar_df)
+        mask = pvals.notna().any(axis=1)
+        transposed = pvals[mask].T
+
+        out = add_missing_counts(transposed, mcar_df)
+        expected = mcar_df.isna().sum()
+        for var in out.index:
+            assert out.loc[var, "n_missing"] == expected[var]
+
+    def test_missing_variable_gets_nan(self):
+        """A row not present in the source yields NaN rather than raising."""
+        source = pd.DataFrame({"a": [1.0, np.nan]})
+        matrix = pd.DataFrame(index=["a", "ghost"], columns=["x"], data=[0, 0])
+        out = add_missing_counts(matrix, source)
+        assert out.loc["a", "n_missing"] == 1
+        assert pd.isna(out.loc["ghost", "n_missing"])
+
+    def test_does_not_mutate_input(self, mcar_df):
+        pvals = MCARTest.mcar_t_tests(mcar_df)
+        before = pvals.copy()
+        add_missing_counts(pvals, mcar_df)
+        pd.testing.assert_frame_equal(pvals, before)
+
+    def test_custom_column_name(self, mcar_df):
+        pvals = MCARTest.mcar_t_tests(mcar_df)
+        out = add_missing_counts(pvals, mcar_df, col_name="n_na")
+        assert out.columns[0] == "n_na"
+        assert "n_missing" not in out.columns
+
+    def test_styler_ignores_the_count_column(self):
+        """Counts render as plain numbers, not as effect bands."""
+        matrix = pd.DataFrame({"x": ["large"]}, index=["a"])
+        source = pd.DataFrame({"a": [1.0, np.nan, np.nan]})
+        out = add_missing_counts(matrix, source)
+
+        html = style_effect(out, large="#123456").to_html()
+        assert "#123456" in html  # the label still gets colored
+        assert ">2<" in html  # the count renders untouched
